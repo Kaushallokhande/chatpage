@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Chatpage from './components/Chatpage';
+import ChatInput from './components/ChatInput';
 
-function App() {
+const App = () => {
+  const [chats, setChats] = useState([{ role: "model", content: "How can I help you?" }]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchChats = async () => {
+    try {
+      let response = await fetch('http://localhost:5000/history/user123');
+      let data = await response.json();
+      setChats(data.messages);
+    } catch (error) {
+      console.log('Error fetching chats', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchChats();
+  }, []);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Chatpage chats={chats} loading={loading}/>
+      <ChatInput fetchChats={fetchChats} setLoading={setLoading}/>
     </div>
   );
-}
+};
 
 export default App;
