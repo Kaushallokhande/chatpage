@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FiSend } from 'react-icons/fi';
-import './ChatInput.css';
+import './Chatpage.css'; // Ensure you have the correct path for your CSS
 
 const ChatInput = ({ fetchChats, setLoading }) => {
   const [prompt, setPrompt] = useState('');
@@ -9,16 +9,20 @@ const ChatInput = ({ fetchChats, setLoading }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/chat', {
+      const response = await fetch('https://chat-server-og4g.onrender.com/chat', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId, prompt }),
+        body: JSON.stringify({ 
+          userId, 
+          prompt, 
+          timestamp: new Date().toISOString()
+        }),
       });
       const data = await response.json();
       console.log(data);
-      fetchChats(); // Fetch new chats
+      fetchChats();
     } catch (error) {
       console.log('Error fetching chats', error);
     } finally {
